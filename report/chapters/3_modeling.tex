@@ -1,0 +1,51 @@
+\section{Data Modeling and Validation}
+\label{sec:3_modeling}
+
+\subsection{Modeling}
+To segment the customer base, we applied the \textbf{k-means algorithm} to the normalized dataset. Rather than arbitrarily selecting the number of segments, a two-stage validation process was employed, incorporating statistical, visual, and business validation to determine the optimal cluster count ($k$). \cite{kmeans-explained-video}
+
+Product segmentation was performed using a systematic \textbf{k-means clustering} approach on retail transaction data spanning \textbf{30,507 products}. Following rigorous data cleaning to remove invalid transactions and handle missing values, \textbf{nine key features} were engineered, including revenue, customer reach, purchase frequency, and sales consistency metrics.
+
+Cluster counts ranging from $k=2$ to $k=10$ were evaluated using both the \textbf{elbow method} and \textbf{silhouette scoring}. The final model identified \textbf{six distinct product clusters} based on commercial performance patterns.
+
+\subsection{Stage 1: Statistical Validation (Elbow Method and Silhouette Score)}
+The algorithm was executed for values of $k$ ranging from 2 to 10, and performance was assessed using two complementary metrics: compactness, measured by the sum of squared errors (SSE), and separation, measured by the silhouette score.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/cx_elbow_method.png}
+	\caption{Dual-metric analysis comparing the elbow method and silhouette score \cite{silhouette-score}}
+	\label{fig:elbow}
+\end{figure}
+
+\textbf{Analysis of Figure \ref{fig:elbow}:}
+\begin{itemize}
+	\item \textbf{Elbow Method (Blue Line):} The SSE decreases sharply from $k=2$ to $k=3$, followed by a smaller reduction at $k=4$, after which the curve flattens. This indicates diminishing returns beyond four clusters.
+	\item \textbf{Silhouette Analysis (Orange Line):} The highest silhouette score was observed at $k=3$ (\textbf{0.428}), indicating strong separation. However, the score for $k=4$ remained comparably high (\textbf{0.413}).
+\end{itemize}
+
+\subsection{Stage 2: Visual and Business Validation}
+Although statistical validation favored $k=3$, effective business segmentation requires actionable differentiation. To resolve the discrepancy between $k=3$ and $k=4$, clusters were evaluated using both Principal Component Analysis (PCA) visualizations and a business-oriented view (revenue versus visit frequency).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/cx_scatter_plot.png}
+	\caption{Comparative validation showing cluster overlap at $k=3$ and VIP isolation at $k=4$}
+	\label{fig:scatter}
+\end{figure}
+
+\subsubsection{Rejection of $k=3$: The Lumping Problem}
+As shown in the \textbf{left panel ($k=3$)} of Figure \ref{fig:scatter}, the algorithm produced a dominant cluster containing over 26{,}000 customers.
+\begin{itemize}
+	\item \textbf{Deficiency:} This solution merged frequent visitors with one-time shoppers.
+	\item \textbf{Business Impact:} The resulting segment lacked sufficient granularity to support targeted marketing strategies.
+\end{itemize}
+
+\subsubsection{Selection of $k=4$: VIP Segment Isolation}
+The \textbf{right panel ($k=4$)} demonstrates a critical improvement, in which the algorithm separated the dominant group and isolated a distinct high-value segment (Cluster 3, shown in teal/blue).
+\begin{itemize}
+	\item \textbf{Quantitative Validation:} In the $k=3$ model, the top segment exhibited an average revenue of \$683. Under $k=4$, the newly isolated VIP cluster achieved an average revenue of \textbf{\$790}.
+	\item \textbf{Conclusion:} By accepting a negligible reduction in silhouette score (0.015), the model achieved a highly pure VIP segment. This confirms $k=4$ as the superior \textit{business} solution, providing actionable insights that were obscured under $k=3$.
+\end{itemize}
+
+Screenshots documenting the modeling and validation of the product clustering process are provided in the Appendix (Section~\ref{sec:app_a}).

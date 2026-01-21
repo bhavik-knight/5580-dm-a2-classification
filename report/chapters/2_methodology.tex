@@ -1,0 +1,68 @@
+\section{Methodology and Data Preparation}
+\label{sec:2_methodology}
+
+The clustering analysis was conducted using a hybrid technology stack involving MySQL for data storage and a Python-based analytics stack (NumPy, pandas, Scikit-learn, Matplotlib, Seaborn, etc.) for analytical processing. This rigorous data pipeline ensured that raw transactional logs were transformed into a normalized, high-quality feature set suitable for the k-means algorithm. \cite{kmeans-clustering-python}
+
+\subsection{Data Acquisition and Storage}
+The raw dataset was provided as a structured SQL file. A local MySQL database named \texttt{mcda5580} was created, and the source script was executed to generate the \texttt{sales219} table and load the relevant data.
+\begin{itemize}
+	\item \textbf{Volume:} The dataset comprises \textbf{3,678,038 rows} across 17 columns.
+	\item \textbf{Granularity:} Each record represents an individual line-item transaction.
+\end{itemize}
+Handling a dataset of this scale ($>3.6$ million rows) required database-level storage rather than spreadsheet software to preserve data integrity and query performance.
+
+\subsection{Data Integration (Python--SQL Bridge)}
+To enable advanced feature engineering, a connection was established between the local MySQL database and the Python environment using the \texttt{mysqlclient} and \texttt{sqlalchemy} libraries. The data were ingested into a pandas DataFrame for in-memory manipulation. This approach enabled SQL-based filtering alongside Python-based vectorized operations.
+
+\subsection{Data Aggregation}
+The transactional data were aggregated by \texttt{customer\_id} to generate a customer-centric representation. This process transformed over 3.6 million transactions into unique profiles for \textbf{44,469 distinct customers} across \textbf{30,507 products}.
+
+The initial customer-level aggregation included:
+\begin{itemize}
+	\item \textbf{Total Revenue:} Sum of \texttt{selling\_retail\_amount}.
+	\item \textbf{Product Diversity:} Count of distinct products purchased.
+	\item \textbf{Visit Frequency:} Count of unique transaction identifiers.
+\end{itemize}
+
+\subsection{Exploratory Data Analysis (EDA) and Feature Engineering}
+To satisfy the requirement for creativity with justification, behavioral features were explored beyond simple aggregation metrics. Because k-means clustering identifies latent behavioral patterns, features were engineered to capture \textit{how} customers shop rather than solely \textit{how much} they spend.
+
+\begin{enumerate}
+	\item \textbf{Weekend Proportion (Lifestyle Metric):}  
+	The day of the week was extracted from transaction timestamps, and the following ratio was computed:
+	\[
+	\text{Weekend Proportion} = \frac{\text{Visits (Saturday + Sunday)}}{\text{Total Visits}}
+	\]
+	This feature, bounded between 0 and 1, differentiates weekend-focused customers from those with flexible weekday schedules.
+	
+	\item \textbf{Promotion Sensitivity (Price Metric):}  
+	Using the \texttt{PROMO\_SALES\_IND\_CD} attribute, transactions were categorized by promotion type. Features were engineered to capture consumption patterns for \texttt{Promo B} (bundles) and \texttt{Promo C} (clearance), enabling differentiation between value-driven and premium shoppers.
+	
+	\item \textbf{Visit Consistency:}  
+	The \texttt{visits\_per\_month} metric was calculated to normalize purchasing behavior across newly acquired and long-term customers.
+\end{enumerate}
+
+\subsection{Data Cleaning and Outlier Detection}
+Unsupervised learning algorithms such as k-means rely on \textbf{Euclidean distance} to determine cluster membership and are therefore highly sensitive to outliers.
+
+\begin{itemize}
+	\item \textbf{Identification:} EDA revealed extreme ``whale'' customers, including a single entity with more than 43{,}000 recorded visits. Inclusion of such extreme observations would compress the remaining data distribution and distort clustering results.
+	\item \textbf{Action:} A \textbf{99th-percentile filter} was applied, removing the top 1\% of records based on revenue and visit frequency.
+	\item \textbf{Validation (DBSCAN):} As a validation step, the DBSCAN algorithm was applied to the unfiltered data. These extreme observations were consistently flagged as noise (label $-1$), providing empirical justification for their exclusion.
+\end{itemize}
+
+In parallel, EDA was conducted on the \textbf{product} dataset to assess inventory performance. After removing invalid transactions and handling missing values, nine key features were engineered, including revenue, customer reach, purchase frequency, and sales consistency metrics.
+
+\subsection{Normalization Strategy}
+Normalization is a critical prerequisite for k-means clustering. Because the algorithm relies on \textbf{Euclidean distance}, features with larger numeric ranges (e.g., revenue) can dominate similarity calculations if not appropriately scaled.
+
+\subsubsection{Customer Normalization}
+For customer segmentation, \textbf{min--max scaling} was applied to transform all features into the fixed range $[0,1]$. Following outlier removal, the normalized customer feature vector was computed as:
+\begin{equation}
+	x' = \frac{x - \min(x)}{\max(x) - \min(x)}
+\end{equation}
+
+\subsubsection{Product Normalization}
+For product-level clustering, a \textbf{log transformation} was applied to mitigate revenue skewness, followed by \textbf{robust scaling} to reduce sensitivity to extreme values. This ensured that high-selling items did not distort the feature space.
+
+Using these normalization strategies, cluster counts ranging from $k=2$ to $k=10$ were evaluated using both the \textbf{elbow method} and \textbf{silhouette scoring}. The final model identified \textbf{six distinct product clusters} based on commercial performance characteristics.

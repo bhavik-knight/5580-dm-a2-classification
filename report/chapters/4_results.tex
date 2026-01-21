@@ -1,0 +1,63 @@
+\section{Results and Comparative Analysis}
+
+To determine the final segmentation model, the cluster centroids and distributions of both the three-cluster and four-cluster solutions were analyzed. While statistical metrics derived from the elbow method indicated that $k=3$ was acceptable, a more granular analysis of customer behavior demonstrated that $k=4$ provided substantially higher business utility.
+
+\subsection{Analysis of the $k=3$ Model (Baseline)}
+The three-cluster solution, although statistically stable, exhibited excessive generalization. As shown in Table~\ref{tab:k3_summary}, Cluster~0 contained nearly 60\% of the total customer base (26{,}850 customers), combining multiple distinct behavioral profiles into a single mass-market segment.
+
+\begin{table}[H]
+	\centering
+	\caption{Summary of $k=3$ Clusters}
+	\label{tab:k3_summary}
+	\begin{tabular}{|c|c|r|c|c|l|}
+		\hline
+		\textbf{Cluster} & \textbf{Size} & \textbf{Revenue (\$)} & \textbf{Visits/Month} & \textbf{Weekend Ratio} & \textbf{Profile Description} \\ \hline
+		0 & 26{,}850 & 75.37 & 1.71 & 0.05 & \textbf{Mass Market} \\ \hline
+		1 & 10{,}063 & 72.52 & 1.57 & 0.84 & \textbf{Weekenders} \\ \hline
+		2 & 6{,}667 & 683.79 & 6.32 & 0.26 & \textbf{High Value} \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figures/cx_seg_revenue_monthly_visit.png}
+	\caption{Cluster separation comparing visits and total revenue. Centroid~3 ($k=4$) exhibits a substantially higher revenue position than Centroid~2 ($k=3$).}
+	\label{fig:scatter_compare}
+\end{figure}
+
+\textbf{Critique of the $k=3$ Model:}  
+Although Cluster~2 exhibited an average revenue of \$683, Figure~\ref{fig:scatter_compare} (left panel) illustrates that this cluster encompassed a wide behavioral range, combining moderate spenders with true high-value customers. This overlap reduced the effectiveness of targeted premium marketing strategies.
+
+\subsection[Analysis]{Analysis of the $k=4$ Model (Selected Solution)}
+Increasing the segmentation resolution to $k=4$ enabled the algorithm to partition customers into more behaviorally coherent groups. Table~\ref{tab:k4_summary} presents the refined cluster metrics.
+
+\begin{table}[H]
+	\centering
+	\caption{Summary of $k=4$ Clusters}
+	\label{tab:k4_summary}
+	\begin{tabular}{|c|c|r|c|c|l|}
+		\hline
+		\textbf{Cluster} & \textbf{Size} & \textbf{Revenue (\$)} & \textbf{Visits/Month} & \textbf{Promo B Usage} & \textbf{Profile Description} \\ \hline
+		0 & 14{,}304 & 94.43 & 1.91 & \textbf{0.78} & \textbf{Promo Hunters} \\ \hline
+		1 & 15{,}825 & 88.54 & 1.82 & 0.48 & \textbf{Casual Browsers} \\ \hline
+		2 & 8{,}419 & 69.03 & 1.48 & 0.44 & \textbf{Weekend Warriors} \\ \hline
+		3 & 5{,}032 & \textbf{790.83} & \textbf{7.01} & 5.42 & \textbf{VIP Whales}\\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Key Improvements in the $k=4$ Model}
+\begin{enumerate}
+	\item \textbf{Identification of VIP Whales (Cluster~3):}  
+	Under the $k=3$ model, the highest-value segment averaged \$683 in revenue. The $k=4$ solution isolated a smaller, purer segment of 5{,}032 customers with an average revenue of \textbf{\$790.83}. This distinction enables targeted premium retention strategies that were previously diluted.
+	
+	\item \textbf{Refinement of Weekend Warriors (Cluster~2):}  
+	The weekend activity ratio increased from 0.84 in the $k=3$ model to \textbf{0.90} under $k=4$, confirming a highly distinct segment that almost exclusively shops on weekends. This insight supports weekend-specific staffing and promotional strategies.
+	
+	\item \textbf{Segmentation of the Mass Market (Clusters~0 and~1):}  
+	The large mass-market cluster from the $k=3$ solution was divided based on promotion sensitivity. Cluster~0 demonstrated substantially higher Promo~B usage (0.78 average) compared to Cluster~1 (0.48 average), indicating that Cluster~0 is price-sensitive, whereas Cluster~1 exhibits general disengagement.
+\end{enumerate}
+
+\subsection{Visual Validation of Separation}
+Figure~\ref{fig:scatter_compare} visually reinforces the superiority of the $k=4$ solution. Additional visualizations illustrating customer and product clustering outcomes are provided in the Appendix (Section~\ref{sec:app_a}).
+
+In the $k=4$ cluster plot (right panel), the red cluster (Cluster~3) clearly isolates the high-frequency, high-revenue quadrant, while the blue and orange clusters (Clusters~0 and~1) effectively partition the dense lower-left region. This confirms that $k=4$ captures the underlying structural variance of the customer base more effectively than $k=3$.

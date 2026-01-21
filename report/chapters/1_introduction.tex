@@ -1,0 +1,18 @@
+\section{Introduction}
+\label{sec:1_introduction}
+\subsection{Objective}
+The primary objective of this analysis is to perform \textbf{unsupervised machine learning} on the retail transaction dataset (\texttt{sales219}) to identify distinct customer segments, and products for targeted marketing for those customer segments. Unlike supervised learning, which predicts known outcomes based on labeled data, this study utilizes \textbf{clustering algorithms} to uncover hidden patterns and natural groupings within the customer base and products without prior ground truth. \cite{types-cluster-analysis}
+
+By segregating customers based on their purchasing behavior, we aim to provide the business owner with actionable profiles---such as ``VIP Whales'' or ``Weekend Warriors''---to enable targeted marketing strategies rather than a generic ``one-size-fits-all'' approach. 
+
+
+
+\subsection{Scope of Analysis}
+The study requires clustering for both Customers and Products. To ensure analytical depth, the work was divided as follows:
+\begin{itemize}
+	\item \textbf{Customer Clustering:} Analysis of purchasing behavior, based on preliminary factors like number of products bought, number of distinct products bought, revenue contribution, and number of visits. However, to conduct a thorough analysis, some other factors are considered, such as visit frequency (monthly), promotion sensitivity, and weekend shopping habits.
+	
+	\item \textbf{Product Clustering:} Analysis of inventory performance, revenue per product, and basket co-occurrence using Mean Normalization.
+	
+\end{itemize}
+This report \textbf{focuses} on the \textbf{Customer Segmentation} process, detailing the end-to-end process from feature engineering to model validation, along with results. Additionally, the \textbf{Product Clustering} methodology and results will be \textbf{briefly} discussed.

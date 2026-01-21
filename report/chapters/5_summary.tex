@@ -1,0 +1,32 @@
+\section{Summary}
+\label{sec:summary}
+
+This report presents a comprehensive data mining analysis of the \texttt{sales219} retail transaction dataset. By applying unsupervised machine learning techniques, including \textbf{k-means clustering}, and rigorous validation methods such as \textbf{DBSCAN} and \textbf{silhouette analysis}, the business entities were partitioned into actionable and interpretable segments. In the future, \textbf{hierarchical clustering} can be employed to find nearest cluster which can be used to recommendation systems. \cite{hierarchical-clustering-intro}
+
+The analysis was structured around two strategic domains:
+\begin{enumerate}
+	\item \textbf{Customer Segmentation:} Identification of purchasing behaviors to optimize marketing expenditure.
+	\item \textbf{Product Segmentation:} Categorization of inventory performance to support supply chain and merchandising decisions.
+\end{enumerate}
+
+\subsection{Key Findings: Customer Segmentation ($k=4$)}
+Using a normalized dataset with outlier protection (top 1\% removed), four distinct customer personas were identified:
+\begin{itemize}
+	\item \textbf{VIP Whales (11\%):} The most valuable segment, generating an average of \textbf{\$790 per month} with a high visit frequency (approximately seven visits per month). These customers exhibit strong engagement with \texttt{Promo B} bundle offers.
+	
+	\item \textbf{Weekend Warriors (19\%):} A segment revealed through targeted feature engineering. These customers conduct approximately \textbf{90\% of their visits} on Saturdays and Sundays, representing a concentrated demand period that introduces specific staffing and inventory pressures. The methodology supporting this finding is detailed in the Appendix (Section~\ref{sec:app_a}).
+	
+	\item \textbf{Promo Hunters and Casuals:} The mass-market segment was further divided based on promotion sensitivity. Promo Hunters actively engage with clearance-based promotions (\texttt{Promo C}), whereas Casual customers exhibit low engagement levels and an elevated risk of churn.
+\end{itemize}
+
+\subsection{Key Findings: Product Segmentation ($k=6$)}
+Product-level clustering revealed distinct performance-based groupings that differentiate high-revenue flagship products from low-velocity inventory. These clusters provide actionable insight into which products warrant premium positioning, routine replenishment, or targeted clearance strategies.
+
+\begin{itemize}
+	\item \textbf{High-Value Drivers (Clusters 0 \& 4):} The ``Foundation Pillars'' and ``Premium Niche'' products (28\% of items) generate the vast majority of revenue through high traffic and exceptional customer spend, requiring strict inventory protection.
+	\item \textbf{Core Stabilizers (Clusters 1 \& 2):} ``Mass Market Essentials'' and Average products provide essential inventory depth and stability; while individual revenue is lower, they are crucial for bundling and customer retention.
+	\item \textbf{Candidates for Rationalization (Clusters 3 \& 5):} The ``Inactive'' and ``Neglected'' segments represent dead weight with near-zero engagement, identifying immediate opportunities for clearance sales or discontinuation to free up capital.
+\end{itemize}
+
+\subsection{Strategic Recommendation}
+Integrating insights from both segmentation models yields a unified strategic framework. The business should prioritize \textbf{VIP Whales} with exclusive promotions centered on \textbf{flagship products}, while leveraging the predictable shopping behavior of \textbf{Weekend Warriors} to reduce \textbf{slow-moving inventory} through time-restricted weekend flash sales. This dual strategy aligns customer value with inventory optimization, maximizing revenue while minimizing operational inefficiencies.
