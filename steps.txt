@@ -1,0 +1,93 @@
+Let's go over all the steps Ihave taken.
+
+
+
+1. Load the data (car.csv from the result folder)
+
+2. Check the distribution of the labeled classes - to check if it's balanced or not
+
+3. Check the unique value for each categorical feature
+
+4. Remove duplicate rows
+
+5. Replace "5more" in doors with "6", and "more" in seats with "6"
+
+6. handle imputation function - inside which I have following steps
+
+     6.1 Define null flavors
+
+     6.2 for each column - do this
+
+      - replace null_flavors with np.nan
+
+      -f is.na found in this column,
+
+       - if col - is float, replace with mean, if it's int replace with median, otherwise replace with mod
+
+      - return the imputed dataframe from the function
+
+7. Transform datatypes from object to python-native styles 
+
+8. Save the cleaned dataframe as a "parquet" file in the results/ folder
+
+--- that's all in eda.ipynb ---
+
+
+
+--- The following is in classification.ipynb ---
+
+9. time-wrapper function
+
+10. load the cleaned data from parquet
+
+11. Feature engineering -
+
+ where I apply original_mapping to price, maintenance, storage, safety, shouldBy, and (doors, seats) are int at this point - check after this process if any null/na
+
+12. feature importance - 
+
+- Here, I use mutual information gain instead of a correlation matrix. MI captures statistical dependency between the feature and the label. Then print the result
+
+
+
+
+
+13. Normaization - min-max scaling
+
+
+
+14. Stratified partitioning in 2 stages.
+
+ stage 1 - 10% keep for testing - in value, don't use it at all
+
+state 2 - stratified k fold shuffling with 9 splits, and 10 repeats over remaining 90% of the data.
+
+
+
+15. multi-algo execution loop
+
+15.1. Prepare cross-validation engine -evaluate function - which evaluates all models' results
+   measure - accuracy, precision, recall, f1 score using make_scorer, both mean; std-dev; handle zero-division
+15.2. Function for tune kNN neighbors to find the best k
+15.3. Master execution
+ -- Model_suite = naive bayes, knn, svm - linear - radial kernel, RF, XGBoost, ANN
+ -- raw results stored by a call to - eveulate function 15.1
+ -- prepare a summary =>
+    store df: model -> accuracy, precision, recall, f1 (both mean-std), time taken, _sort_key (for dataframe)
+
+16. save model as pkl (using joblib library)
+
+
+17. Data-viz 
+17.1 Box-plot Model vs F1 score - stability analisis => wide box-plot => inconsistent model across random shuffles
+17.2 Efficiency Trade off for each model => Time taken vs F1 => 
+
+18. Final Testing & Generalization
+- time to test on those 10% data that we put in vault
+- apply fit/predict to all models to get predictions on test data
+- calculate f1_score, accuracy, preicision, recall, (y_pred - for confusion matrix)
+
+19. Compare resultts of cross-validation training vs testing
+- plot the results of comparison against diff score
+
+20. Plot confusion matrix, and ROC for each model, and save the results.
