@@ -42,6 +42,7 @@ class CarDataImputer(BaseEstimator, TransformerMixin):
         self.feature_names = feature_names
         self.int_cols = ["doors", "seats"]
         self.cat_cols = ["price", "maintenance", "safety", "storage"]
+        self.output_features_: list[str] = []
         # Standard ColumnTransformer logic
         self.ct = ColumnTransformer(
             transformers=[
