@@ -1,5 +1,3 @@
-from typing import Any
-
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -15,10 +13,10 @@ class CarDataCleaner(BaseEstimator, TransformerMixin):
         self.null_flavors = {"", "null", "NaN", "NULL", "none", "None"}
         self.mapping = {"5more": "6", "more": "6"}
 
-    def fit(self, X: Any, y: Any = None) -> "CarDataCleaner":
+    def fit(self, X, y=None) -> "CarDataCleaner":
         return self
 
-    def transform(self, X: Any) -> pd.DataFrame:
+    def transform(self, X) -> pd.DataFrame:
         # 1. Ensure we work on a DataFrame (not numpy array)
         X = pd.DataFrame(X).copy()
 
@@ -56,12 +54,12 @@ class CarDataImputer(BaseEstimator, TransformerMixin):
             remainder="drop",
         )
 
-    def fit(self, X: Any, y: Any = None) -> "CarDataImputer":
+    def fit(self, X, y=None) -> "CarDataImputer":
         X_df = pd.DataFrame(X, columns=self.feature_names).copy()
         self.ct.fit(X_df)
         return self
 
-    def transform(self, X: Any) -> pd.DataFrame:
+    def transform(self, X) -> pd.DataFrame:
         X_df = pd.DataFrame(X, columns=self.feature_names)
         # Note: ColumnTransformer reorders columns (int_cols first, then cat_cols)
         # We must track this new order for the next step in the pipeline
@@ -99,14 +97,14 @@ class CarDataEncoder(BaseEstimator, TransformerMixin):
             categories=self.category_lists, handle_unknown="use_encoded_value", unknown_value=-1
         )
 
-    def fit(self, X: Any, y: Any = None) -> "CarDataEncoder":
+    def fit(self, X, y=None) -> "CarDataEncoder":
         # Ensure X is a DataFrame to select columns by name
         X_df = pd.DataFrame(X, columns=self.feature_names).copy()
         # Fit the encoder only on the categorical columns
         self.encoder.fit(X_df[self.cat_cols])
         return self
 
-    def transform(self, X: Any) -> pd.DataFrame:
+    def transform(self, X) -> pd.DataFrame:
         # Create a copy to avoid modifying the original data
         X_df = pd.DataFrame(X).copy()
 
