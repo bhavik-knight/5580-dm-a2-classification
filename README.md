@@ -31,16 +31,13 @@ This project addresses the automotive retail classification challenge: predictin
 **1. Install `uv` (if not already installed)**
 
 ```bash
-# Via pip (recommended)
-pip install uv
-
-# Or download from https://github.com/astral-sh/uv
+download from https://github.com/astral-sh/uv
 ```
 
 **2. Clone and Navigate to Repository**
 
 ```bash
-git clone <repository-url>
+git clone <repository-url> a2-classification
 cd a2-classification
 ```
 
@@ -56,12 +53,12 @@ This command reads `pyproject.toml` and installs all required packages in an iso
 
 ```bash
 # Execute the main classification pipeline
-uv run jupyter lab code/classification.ipynb
+uv run jupyter lab src/classification.ipynb
 
 # Or run alternative analysis notebooks
-uv run jupyter lab code/eda.ipynb              # Exploratory Data Analysis
-uv run jupyter lab code/knn_model.ipynb        # Distance-based baseline
-uv run jupyter lab code/pipeline.ipynb         # Modular preprocessing demo
+uv run jupyter lab src/eda.ipynb              # Exploratory Data Analysis
+uv run jupyter lab src/knn_model.ipynb        # Distance-based baseline
+uv run jupyter lab src/pipeline.ipynb         # Modular preprocessing demo
 ```
 
 ---
@@ -75,7 +72,7 @@ uv run jupyter lab code/pipeline.ipynb         # Modular preprocessing demo
 │   ├── car.parquet                # Parquet format (efficient processing)
 │   └── unknown_car_data.csv       # Test set for stress testing (100,000 records)
 │
-├── code/
+├── src/
 │   ├── car_transformers.py        # Custom Scikit-Learn transformers (pipeline stages)
 │   ├── classification.ipynb       # Main comparative analysis (all algorithms)
 │   ├── eda.ipynb                  # Exploratory data analysis & feature insights
@@ -126,20 +123,20 @@ uv run jupyter lab code/pipeline.ipynb         # Modular preprocessing demo
 
 The project implements three specialized Scikit-Learn transformers for reproducible data handling:
 
-#### 1. **CarDataCleaner** (`code/car_transformers.py:10-34`)
+#### 1. **CarDataCleaner** (`src/car_transformers.py:10-34`)
 Standardizes null flavors and string mappings:
 ```python
 # Handles anomalies: "", "null", "NaN", "NULL", "none", "None"
 # Maps: "5more" → "6", "more" → "6"
 ```
 
-#### 2. **CarDataImputer** (`code/car_transformers.py:38-71`)
+#### 2. **CarDataImputer** (`src/car_transformers.py:38-71`)
 Implements hybrid imputation strategy:
 - **Numeric Columns** (doors, seats): Median imputation
 - **Categorical Columns** (price, maintenance, safety, storage): Mode imputation
 - Uses `ColumnTransformer` for isolated column handling
 
-#### 3. **CarDataEncoder** (`code/car_transformers.py:75-110`)
+#### 3. **CarDataEncoder** (`src/car_transformers.py:75-110`)
 Preserves ordinal relationships using custom mappings:
 ```python
 "price": ["low", "med", "high", "vhigh"]
@@ -237,19 +234,19 @@ Stress Test on 100,000 synthetic records
 
 ```bash
 # Preprocessing demonstration
-uv run jupyter lab code/pipeline.ipynb
+uv run jupyter lab src/pipeline.ipynb
 
 # Full comparative analysis
-uv run jupyter lab code/classification.ipynb
+uv run jupyter lab src/classification.ipynb
 
 # Exploratory insights
-uv run jupyter lab code/eda.ipynb
+uv run jupyter lab src/eda.ipynb
 
 # KNN baseline implementation
-uv run jupyter lab code/knn_model.ipynb
+uv run jupyter lab src/knn_model.ipynb
 
 # Extended diagnostics
-uv run jupyter lab code/additional_tests.ipynb
+uv run jupyter lab src/additional_tests.ipynb
 ```
 
 ---
@@ -295,9 +292,9 @@ Managed via `pyproject.toml`:
 ## 📚 Project Outputs
 
 - **Report**: `report/main.pdf` — Comprehensive technical documentation
-- **Source Code**: `code/*.ipynb` — Reproducible Jupyter notebooks
+- **Source Code**: `src/*.ipynb` — Reproducible Jupyter notebooks
 - **Data**: `data/` — Training, validation, and stress-test datasets
-- **Preprocessing Module**: `code/car_transformers.py` — Reusable pipeline stages
+- **Preprocessing Module**: `src/car_transformers.py` — Reusable pipeline stages
 
 ---
 
@@ -333,7 +330,7 @@ X_processed = pipeline.fit_transform(X_raw)
 
 For technical questions, refer to:
 - **Main Report**: `report/main.pdf`
-- **Notebooks**: See inline documentation in `code/*.ipynb`
+- **Notebooks**: See inline documentation in `src/*.ipynb`
 - **Data Dictionary**: Table 1 in this README
 
 ---

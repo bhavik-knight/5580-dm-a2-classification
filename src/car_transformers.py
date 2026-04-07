@@ -31,20 +31,27 @@ class CarDataCleaner(BaseEstimator, TransformerMixin):
             X["seats"] = X["seats"].replace("more", "6")
 
         return X
-    
-
 
     # 2. Imputer for missing values
+
+
 class CarDataImputer(BaseEstimator, TransformerMixin):
     def __init__(self, feature_names):
         self.feature_names = feature_names
         self.int_cols = ["doors", "seats"]
         self.cat_cols = ["price", "maintenance", "safety", "storage"]
         # Standard ColumnTransformer logic
-        self.ct = ColumnTransformer(transformers=[
-            ('median_imputer', SimpleImputer(strategy='median'), self.int_cols),
-            ('mode_imputer', SimpleImputer(strategy='most_frequent'), self.cat_cols,),
-        ], remainder='drop')
+        self.ct = ColumnTransformer(
+            transformers=[
+                ("median_imputer", SimpleImputer(strategy="median"), self.int_cols),
+                (
+                    "mode_imputer",
+                    SimpleImputer(strategy="most_frequent"),
+                    self.cat_cols,
+                ),
+            ],
+            remainder="drop",
+        )
 
     def fit(self, X, y=None):
         X_df = pd.DataFrame(X, columns=self.feature_names).copy()
@@ -63,12 +70,11 @@ class CarDataImputer(BaseEstimator, TransformerMixin):
         if transformed_data.shape[1] == 7:
             # If you have an extra column (like a label or ID), we name it 'extra'
             # to avoid the shape mismatch error
-            self.output_features_ = self.int_cols + self.cat_cols + ['unknown_feature']
+            self.output_features_ = self.int_cols + self.cat_cols + ["unknown_feature"]
         else:
             self.output_features_ = self.int_cols + self.cat_cols
-            
+
         return pd.DataFrame(transformed_data, columns=self.output_features_)
-    
 
 
 # 3. Ordinal Mapping for Car Features
@@ -86,7 +92,9 @@ class CarDataEncoder(BaseEstimator, TransformerMixin):
         # Initialize the encoder with your specific categories
         self.cat_cols = list(self.features_map.keys())
         self.category_lists = list(self.features_map.values())
-        self.encoder = OrdinalEncoder(categories=self.category_lists, handle_unknown="use_encoded_value", unknown_value=-1)
+        self.encoder = OrdinalEncoder(
+            categories=self.category_lists, handle_unknown="use_encoded_value", unknown_value=-1
+        )
 
     def fit(self, X, y=None):
         # Ensure X is a DataFrame to select columns by name
@@ -107,4 +115,3 @@ class CarDataEncoder(BaseEstimator, TransformerMixin):
         for col in ["doors", "seats"]:
             X_df[col] = pd.to_numeric(X_df[col], errors="coerce")
         return X_df
-
