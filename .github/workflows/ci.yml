@@ -48,6 +48,14 @@ jobs:
       - name: Dependency analysis (deptry)
         run: uv run python -m deptry .
 
+      - name: isort check
+        run: uv run isort --check-only --diff .
+
+      - name: Autoflake check (detect unused imports/vars)
+        run: |
+          # run autoflake in check mode to detect unused imports/vars without modifying files
+          uv run python -m autoflake --remove-all-unused-imports --remove-unused-variables --recursive --exclude .venv --check .
+
       - name: Show installed packages (for debug)
         if: ${{ always() }}
         run: uv run python -m pip freeze

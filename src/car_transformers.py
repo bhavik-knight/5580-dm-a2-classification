@@ -1,6 +1,7 @@
+from typing import Any
+
 import numpy as np
 import pandas as pd
-from typing import Any
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer

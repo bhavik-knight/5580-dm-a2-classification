@@ -276,6 +276,42 @@ Recommended workflow
 CI suggestion
 - In continuous integration, run `ruff check --fix --exit-zero` (or `ruff check` without `--fix`) and `ty check .` and fail the build on non-zero exit codes to prevent regressions.
 
+Import optimization (auto-remove unused imports & sort imports)
+----------------------------------------------------------
+You can automatically remove unused imports and variables and sort your imports (similar to PyCharm's "Optimize Imports") using the following tools:
+
+- `autoflake` — removes unused imports and unused variables.
+- `isort` — sorts and groups imports.
+- `ruff` — final formatting and lint fixes.
+
+Run these commands from the repository root (using `uv` if you use `uv` to manage the environment):
+
+```bash
+# 1) Dry-run checks (recommended):
+uv run python -m autoflake --remove-all-unused-imports --remove-unused-variables --recursive --exclude .venv --check .
+uv run isort --check-only --diff .
+
+# 2) Apply fixes (if dry-run shows changes):
+uv run python -m autoflake --remove-all-unused-imports --remove-unused-variables --recursive --in-place --exclude .venv .
+uv run isort .
+uv run ruff format .
+uv run ruff check --fix .
+```
+
+If you prefer not to use `uv`, install the tools in your local environment and run the same commands without `uv run`.
+
+Pre-commit integration
+----------------------
+We include a `.pre-commit-config.yaml` that runs `autoflake`, `isort` and `ruff` on commit. To enable it locally:
+
+```bash
+python -m pip install --user pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+Note: `autoflake` can remove imports that are used dynamically (via importlib, strings, or runtime evaluation). Always run the dry-run first and review diffs before applying changes.
+
 
 ## 📦 Dependencies
 
