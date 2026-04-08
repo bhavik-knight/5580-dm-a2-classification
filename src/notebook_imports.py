@@ -10,11 +10,12 @@ reference problems (e.g., `display`, sklearn helpers) are avoided and behavior
 is consistent between interactive and script execution.
 """
 
+import logging
+import pickle
+
 # Standard library
 import sys
 from pathlib import Path
-import pickle
-import logging
 
 # Third-party
 import numpy as np
@@ -24,24 +25,21 @@ import pandas as pd
 try:
     from IPython.display import display  # type: ignore
 except Exception:
+
     def display(obj: object) -> None:  # simple fallback for non-notebook runs
         print(obj)
 
+
+from sklearn.ensemble import RandomForestClassifier
+
 # sklearn helpers commonly used in notebooks
 from sklearn.feature_selection import mutual_info_classif
-from sklearn.metrics import (
-    classification_report,
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-)
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.naive_bayes import GaussianNB
 
 # Common model imports (add others as needed)
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
 # xgboost is optional in some environments
@@ -56,6 +54,7 @@ import joblib
 # Logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 # Convenience: function to recommend imports before unpickling
 def ensure_preimports_for_unpickle():
@@ -78,7 +77,6 @@ def ensure_preimports_for_unpickle():
         if str(repo_root) not in sys.path:
             sys.path.insert(0, str(repo_root))
 
-        from src.car_transformers import CarDataCleaner, CarDataImputer, CarDataEncoder  # type: ignore
     except Exception:
         # Best-effort; if import fails, the user should ensure their PYTHONPATH
         # includes the project root or run notebooks from the repository root.
@@ -107,6 +105,3 @@ __all__ = [
     "logger",
     "ensure_preimports_for_unpickle",
 ]
-
-
-

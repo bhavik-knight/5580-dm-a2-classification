@@ -12,5 +12,18 @@ repos:
       - id: trailing-whitespace
       - id: check-yaml
 
-# Optional: add other hooks (isort, black, etc.) if desired
+# Add import optimization hooks
+  - repo: https://github.com/pre-commit/mirrors-autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        args: ['--remove-all-unused-imports', '--remove-unused-variables', '--in-place', '--recursive']
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ['--profile', 'black']
+
+# Optional: add other hooks (black, etc.) if desired
 
