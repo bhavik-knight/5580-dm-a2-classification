@@ -12,7 +12,6 @@ is consistent between interactive and script execution.
 
 import logging
 import pickle
-
 # Standard library
 import sys
 from pathlib import Path
@@ -31,13 +30,12 @@ except Exception:
 
 
 from sklearn.ensemble import RandomForestClassifier
-
 # sklearn helpers commonly used in notebooks
 from sklearn.feature_selection import mutual_info_classif
-from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
+from sklearn.metrics import (accuracy_score, classification_report, f1_score,
+                             precision_score, recall_score)
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.naive_bayes import GaussianNB
-
 # Common model imports (add others as needed)
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
