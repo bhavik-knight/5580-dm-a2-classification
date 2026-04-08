@@ -52,7 +52,7 @@ Let's go over all the steps Ihave taken.
 
 
 
-13. Normaization - min-max scaling
+13. Normalization - min-max scaling
 
 
 
@@ -71,7 +71,7 @@ state 2 - stratified k fold shuffling with 9 splits, and 10 repeats over remaini
 15.2. Function for tune kNN neighbors to find the best k
 15.3. Master execution
  -- Model_suite = naive bayes, knn, svm - linear - radial kernel, RF, XGBoost, ANN
- -- raw results stored by a call to - eveulate function 15.1
+ -- raw results stored by a call to - evaluate function 15.1
  -- prepare a summary =>
     store df: model -> accuracy, precision, recall, f1 (both mean-std), time taken, _sort_key (for dataframe)
 
@@ -79,15 +79,15 @@ state 2 - stratified k fold shuffling with 9 splits, and 10 repeats over remaini
 
 
 17. Data-viz 
-17.1 Box-plot Model vs F1 score - stability analisis => wide box-plot => inconsistent model across random shuffles
+17.1 Box-plot Model vs F1 score - stability analysis => wide box-plot => inconsistent model across random shuffles
 17.2 Efficiency Trade off for each model => Time taken vs F1 => 
 
 18. Final Testing & Generalization
 - time to test on those 10% data that we put in vault
 - apply fit/predict to all models to get predictions on test data
-- calculate f1_score, accuracy, preicision, recall, (y_pred - for confusion matrix)
+- calculate f1_score, accuracy, precision, recall, (y_pred - for confusion matrix)
 
-19. Compare resultts of cross-validation training vs testing
+19. Compare results of cross-validation training vs testing
 - plot the results of comparison against diff score
 
 20. Plot confusion matrix, and ROC for each model, and save the results.

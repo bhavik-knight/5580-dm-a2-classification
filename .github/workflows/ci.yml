@@ -1,0 +1,54 @@
+name: CI - Code Quality
+
+on:
+  push:
+    branches: [ main, master, feat/*, fix/*, chore/* ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.10]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install uv (project manager via Astral installer) and sync environment
+        run: |
+          # Install uv using Astral's installer (preferred over pip for system setup)
+          curl -sSf https://install.astral.sh | sh
+          # Ensure local bin is on PATH for the runner session
+          export PATH="$HOME/.local/bin:$PATH"
+          uv sync
+
+      - name: Ruff format (check)
+        # Ensure code is formatted. Fail if formatting would change files.
+        run: uv run ruff format --check .
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Type check (ty)
+        run: uv run ty check .
+
+      - name: Dependency analysis (deptry)
+        run: uv run python -m deptry .
+
+      - name: Show installed packages (for debug)
+        if: ${{ always() }}
+        run: uv run python -m pip freeze
+
