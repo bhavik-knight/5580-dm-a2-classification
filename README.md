@@ -230,6 +230,8 @@ Vault Set Evaluation (final metrics)
 Stress Test on 100,000 synthetic records
 ```
 
+Experiments were executed in a Python 3.10 virtual environment on a high‑end workstation (CPU/GPU details and timings are given in the report appendices: `report/appendices/`).
+
 ### Running Individual Components
 
 ```bash
@@ -250,6 +252,30 @@ uv run jupyter lab src/additional_tests.ipynb
 ```
 
 ---
+
+## ✅ Code Quality & Static Analysis
+
+This project uses a small set of developer tools to enforce formatting, linting and static type checks. The commands we ran during development and review are listed below (they assume you have the development dependencies installed — see `pyproject.toml` -> `dependency-groups.dev`).
+
+Commands
+- `ruff format .`
+  - Runs Ruff's formatter over the repository and rewrites files to conform to the configured formatting rules (quotes, indentation, line length, import sorting, etc.). Use this first to ensure consistent formatting.
+
+- `ruff check --fix`
+  - Runs Ruff linter to find linting issues and where possible automatically fixes them. Non-fixable issues will be reported in the output so you can address them manually.
+
+- `ty check .`
+  - Runs the `ty` type-checker across the project (configured as a development dependency). This performs static type analysis using installed type stubs and reports type errors and potential issues. The command exits with a non-zero status when errors are detected — useful for CI enforcement.
+
+Recommended workflow
+- Install dev dependencies (via `uv sync` / `pip` / your environment manager).
+- Run `ruff format .` to normalize formatting.
+- Run `ruff check --fix` to apply easy lint fixes and inspect remaining lint messages.
+- Run `ty check .` to catch type issues before committing.
+
+CI suggestion
+- In continuous integration, run `ruff check --fix --exit-zero` (or `ruff check` without `--fix`) and `ty check .` and fail the build on non-zero exit codes to prevent regressions.
+
 
 ## 📦 Dependencies
 
@@ -305,7 +331,8 @@ This project is submitted as coursework for MCDA 5580 at Saint Mary's University
 **To reuse the preprocessing pipeline:**
 
 ```python
-from code.car_transformers import CarDataCleaner, CarDataImputer, CarDataEncoder
+# Recommended import when running from the repository root
+from src.car_transformers import CarDataCleaner, CarDataImputer, CarDataEncoder
 from sklearn.pipeline import Pipeline
 
 # Build custom preprocessing pipeline
@@ -316,6 +343,39 @@ pipeline = Pipeline([
 ])
 
 X_processed = pipeline.fit_transform(X_raw)
+```
+
+Notes on pickling and loading serialized objects
+-----------------------------------------------
+
+If you saved a fitted pipeline (or other object) that contains these custom
+transformers using `pickle` or `joblib`, Python must be able to import the
+original class definitions when you load the file. Common errors and fixes:
+
+- "Can't get attribute 'CarDataCleaner' on <module '__main__'>": This happens
+  when the object was pickled from a notebook (module `__main__`) or from a
+  different import path. To avoid this, define classes in `src/car_transformers.py`
+  (already done) and import them before unpickling. Example:
+
+```python
+# In a new session/notebook, before loading the pickle:
+from src.car_transformers import CarDataCleaner, CarDataImputer, CarDataEncoder
+import joblib
+
+pipeline = joblib.load('results/pipeline_KNN_K3.joblib')
+```
+
+- If loading still fails, ensure you run the notebook from the project root (so
+  the `src` module is importable), or add the project root to `sys.path`.
+
+Utility: we include `src/notebook_imports.py` with a helper `ensure_preimports_for_unpickle()`
+that imports local transformer classes. In notebooks, you can run:
+
+```python
+from src.notebook_imports import ensure_preimports_for_unpickle
+ensure_preimports_for_unpickle()
+import joblib
+pipeline = joblib.load('results/pipeline_KNN_K3.joblib')
 ```
 
 ---
