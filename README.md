@@ -1,5 +1,8 @@
 # Supervised Learning Classification: Vehicle Acceptability Prediction
 
+<!-- CI status badge: replace <OWNER> and <REPO> with your GitHub org/user and repo name -->
+![CI](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg)
+
 A comprehensive machine learning classification system for predicting vehicle acceptability using multiple algorithmic approaches and a production-ready automated data pipeline.
 
 ## 📋 Project Overview
